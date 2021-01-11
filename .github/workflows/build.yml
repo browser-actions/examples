@@ -1,0 +1,44 @@
+name: 'build-test'
+on:
+  pull_request:
+  push:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        browser: [chromium-latest, firefox-esr, firefox-latest]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - run: yarn install --frozen-lockfile
+
+      - uses: ueokande/setup-firefox@latest
+        if: matrix.browser == 'firefox-esr'
+        with:
+          firefox-version: latest-esr
+      - uses: ueokande/setup-firefox@latest
+        if: matrix.browser == 'firefox-latest'
+        with:
+          firefox-version: latest
+      - uses: ueokande/setup-chromium@latest
+        if: matrix.browser == 'chromium-latest'
+        with:
+          chromium-version: latest
+
+      - name: Run tests on Firefox
+        if: matrix.browser == 'firefox-esr' || matrix.browser == 'firefox-latest'
+        run: yarn test --browsers=Firefox,FirefoxHeadless
+      - name: Run test on Chromium
+        if: matrix.browser == 'chromium-latest'
+        run: yarn test --browsers=Chromium,ChromiumHeadless
