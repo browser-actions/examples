@@ -38,7 +38,11 @@ jobs:
 
       - name: Run tests on Firefox
         if: matrix.browser == 'firefox-esr' || matrix.browser == 'firefox-latest'
-        run: yarn test --browsers=Firefox,FirefoxHeadless
+        run: |
+          Xvfb -ac :99 -screen 0 1280x1024x24 >/dev/null 2>&1 &
+          DISPLAY=:99 yarn test --browsers=Firefox,FirefoxHeadless
       - name: Run test on Chromium
         if: matrix.browser == 'chromium-latest'
-        run: yarn test --browsers=Chromium,ChromiumHeadless
+        run: |
+          Xvfb -ac :99 -screen 0 1280x1024x24 >/dev/null 2>&1 &
+          DISPLAY=:99 yarn test --browsers=Chromium,ChromiumHeadless
