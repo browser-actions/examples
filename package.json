@@ -1,0 +1,9 @@
+{
+  "name": "browser-actions-examples",
+  "version": "1.0.0",
+  "description": "An example set to test JavaScript on multi-browsers.",
+  "main": "index.js",
+  "repository": "https://github.com/browser-actions/examples",
+  "author": "Shin'ya Ueoka <ueokande@i-beam.org>",
+  "license": "MIT"
+}
