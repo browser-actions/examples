@@ -39,8 +39,10 @@ jobs:
       - name: Run test on Chromium
         if: matrix.browser == 'chromium'
         run: |
+          $Env:CHROMIUM_BIN = "chrome"
           yarn test --browsers=Chromium
       - name: Run test on Microsoft Edge
         if: matrix.browser == 'edge'
         run: |
+          $Env:EDGE_BIN = "msedge.exe"
           yarn test --browsers=Edge
