@@ -7,8 +7,8 @@ jobs:
   build:
     strategy:
       matrix:
-        browser: [chromium-latest, firefox-esr, firefox-latest]
-    runs-on: ubuntu-latest
+        browser: [chromium, firefox, edge]
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
       - name: Get yarn cache directory path
@@ -23,29 +23,24 @@ jobs:
 
       - run: yarn install --frozen-lockfile
 
-      - uses: ueokande/setup-firefox@latest
-        if: matrix.browser == 'firefox-esr'
+      - uses: browser-actions/setup-firefox@latest
+        if: matrix.browser == 'firefox'
         with:
-          firefox-version: latest-esr
-      - uses: ueokande/setup-firefox@latest
-        if: matrix.browser == 'firefox-latest'
-        with:
-          firefox-version: latest
-      - uses: ueokande/setup-chromium@latest
-        if: matrix.browser == 'chromium-latest'
-        with:
-          chromium-version: latest
+          firefox-version: "84.0"
+      - uses: browser-actions/setup-chromium@latest
+        if: matrix.browser == 'chromium'
+      - uses: browser-actions/setup-edge@latest
+        if: matrix.browser == 'edge'
 
       - name: Run tests on Firefox
-        if: matrix.browser == 'firefox-esr' || matrix.browser == 'firefox-latest'
+        if: matrix.browser == 'firefox'
         run: |
-          Xvfb -ac :99 -screen 0 1280x1024x24 >/dev/null 2>&1 &
-          DISPLAY=:99 yarn test --browsers=Firefox,FirefoxHeadless
+          yarn test --browsers=Firefox
       - name: Run test on Chromium
-        if: matrix.browser == 'chromium-latest'
+        if: matrix.browser == 'chromium'
         run: |
-          # Installed chromium binary is named "chrome"
-          export CHROMIUM_BIN=$(which chrome)
-
-          Xvfb -ac :99 -screen 0 1280x1024x24 >/dev/null 2>&1 &
-          DISPLAY=:99 yarn test --browsers=Chromium,ChromiumHeadless
+          yarn test --browsers=Chromium
+      - name: Run test on Microsoft Edge
+        if: matrix.browser == 'edge'
+        run: |
+          yarn test --browsers=Edge
