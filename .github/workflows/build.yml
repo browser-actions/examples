@@ -23,13 +23,13 @@ jobs:
 
       - run: yarn install --frozen-lockfile
 
-      - uses: browser-actions/setup-firefox@latest
+      - uses: browser-actions/setup-firefox@v1
         if: matrix.browser == 'firefox'
         with:
           firefox-version: "84.0"
-      - uses: browser-actions/setup-chromium@latest
+      - uses: browser-actions/setup-chromium@v1
         if: matrix.browser == 'chromium'
-      - uses: browser-actions/setup-edge@latest
+      - uses: browser-actions/setup-edge@v1
         if: matrix.browser == 'edge'
 
       - name: Run tests on Firefox
